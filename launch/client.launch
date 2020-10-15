@@ -1,0 +1,16 @@
+<!-- To be run on the Raspberry Pi, not the master machine -->
+<launch>
+  <!-- Serves as camera identifier and topic/service namespace -->
+  <arg name="node_name" default="picam1" />
+  <!-- Folder to save captured images and video -->
+  <arg name="save_dir" default="$(find ros_picam)/captures" />
+
+  <node name="$(arg node_name)"
+    pkg="ros_picam"
+    type="picam_client.py"
+    output="screen"
+    respawn="true"
+    respawn_delay="5"
+    args="$(arg save_dir)" />
+
+</launch>

@@ -1,0 +1,5 @@
+# Length in seconds to record
+# Anything <1 means indefinitely
+uint16 seconds
+---
+bool success

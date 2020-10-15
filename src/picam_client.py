@@ -9,7 +9,7 @@ from PIL import Image
 import rospy
 import rosgraph
 from std_msgs.msg import String
-from remote_picam.srv import *
+from ros_picam.srv import *
 from datetime import datetime
 
 
@@ -152,7 +152,7 @@ if __name__ == '__main__':
     except:
         rospy.logwarn("Something went wrong with arguments. Using Defaults.")
         NODE_NAME = 'picam1'
-        SAVE_DIR = '/home/ubuntu/catkin_ws/src/remote_picam/captures/'
+        SAVE_DIR = '/home/ubuntu/catkin_ws/src/ros_picam/captures/'
     # rospy.loginfo("NODE_NAME set to \"{}\"".format(NODE_NAME))
     # rospy.loginfo("SAVE_DIR set to \"{}\"".format(SAVE_DIR))
 

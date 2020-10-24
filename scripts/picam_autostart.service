@@ -1,0 +1,11 @@
+[Unit]
+Description=picam_autostart
+
+[Service]
+Type=simple
+ExecStart=/home/ubuntu/catkin_ws/src/ros_picam/scripts/startup_launch.sh
+TimeoutStartSec=180
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

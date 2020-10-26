@@ -42,6 +42,7 @@ def get_time_string(include_date=False):
     return dt_string
 
 def grab_still(req):
+    print("TEST GRAB STILL")
     success = False
     label = 'grab'  # make configurable?
     num = req.number
@@ -77,7 +78,7 @@ def start_recording(req):
         label = "rec"  # make configurable?
         filename = "/video/{}-{}-{}.h264".format(NODE_NAME,label,get_time_string())
         recording = True
-        camera.start_recording(SAVE_DIR+filename)
+        camera.start_recording(SAVE_DIR+filename,format='h264')
         if req.seconds > 0:
             # Maybe implement timing manually
             camera.wait_recording(req.seconds)

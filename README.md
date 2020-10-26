@@ -62,6 +62,7 @@ If you're seeing errors, you likely need to make some changes to *startup_launch
 ```   
 sudo systemctl restart picam_autostart  
 ```   
+NOTE: For currently unknown reasons, text output from the node only makes it into systemctl status when the node is shutdown. Ideally there will be a way around this, or some other way of monitoring the nodes output in realtime for troubleshooting.
 
 ### Using ros_picam
 The main script being used is **picam_client.py**, the other python scripts in the src folder are just for testing purposes and will likely be removed at some point.
@@ -78,6 +79,7 @@ rosservice call [node_name]/grab_still 3
 ```   
 However, the launch files provided will also call their respective services. The benefit of calling the services via launch files is that they can easily be edited to call the services from multiple Picams simultaneously if using a multi-camera setup.   
 
+TODO: Recorded videos may all need to be converted using something like MP4Box (part of gpac). [This was the most relevant post I found](https://www.raspberrypi.org/forums/viewtopic.php?t=245875) regarding choppy/glitched video playback, and it seems like the data itself is fine, but it lacks some information for proper playback for some reason. Will likely address this when it becomes clearer how stills and videos are going to be handled over the network.
 
 ### Additional Notes   
 The scripts temp_check.sh and temp_monitor.sh can be copied into the **/usr/bin** folder so they may be called with the commands **tempcheck** and **tempmonitor** respectively to keep an awareness of the pi's core temperature under different conditions. Future plans include the ability to publish this information over ROS topics.  

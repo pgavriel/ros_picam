@@ -78,6 +78,8 @@ The three currently implemented services are **grab_still**, **start_recording**
 rosservice call [node_name]/grab_still 3
 ```   
 However, the launch files provided will also call their respective services. The benefit of calling the services via launch files is that they can easily be edited to call the services from multiple Picams simultaneously if using a multi-camera setup.   
+  
+Additional services can be defined and implemented as needed.  
 
 TODO: Recorded videos may all need to be converted using something like MP4Box (part of gpac). [This was the most relevant post I found](https://www.raspberrypi.org/forums/viewtopic.php?t=245875) regarding choppy/glitched video playback, and it seems like the data itself is fine, but it lacks some information for proper playback for some reason. Will likely address this when it becomes clearer how stills and videos are going to be handled over the network.
 

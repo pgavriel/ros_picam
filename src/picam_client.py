@@ -3,21 +3,25 @@ import os
 import sys
 from subprocess import call
 from io import BytesIO
-from time import sleep
-from picamera import PiCamera
-from PIL import Image
 import rospy
 import rosgraph
 from std_msgs.msg import String
 from ros_picam.srv import *
+from time import sleep
 from datetime import datetime
 
+from picamera import PiCamera
+from PIL import Image
+import cv2
+import numpy as np
+import taskboard_detection as tb
 
-# TODO: Make configurable (rosparams would make them all consistant?)
-def setup_camera(label,iso=500):
-    camera = PiCamera(resolution=(1920, 1080), framerate=30)
+
+def setup_camera(label,w=1920,h=1080,fps=30,rotation=0,iso=500):
+    camera = PiCamera(resolution=(w, h), framerate=fps)
     # Set ISO to the desired value
     camera.iso = iso
+    camera.rotation = rotation
     #camera.annotate_text = label
     # Wait for the automatic gain control to settle
     sleep(2)
@@ -42,7 +46,6 @@ def get_time_string(include_date=False):
     return dt_string
 
 def grab_still(req):
-    print("TEST GRAB STILL")
     success = False
     label = 'grab'  # make configurable?
     num = req.number
@@ -57,13 +60,37 @@ def grab_still(req):
         image = Image.open(stream)
         filename = '{}-{}-{}.jpg'.format(NODE_NAME,label,get_time_string())
         image.save(filename)
-        # TODO: ROS INFO
         rospy.loginfo("{} grabbing still {}/{} -> {}".format(NODE_NAME,i+1,num,filename))
 
     success = True
     print("")
     return GrabStillResponse(success)
 
+def grab_taskboard(req):
+        success = False
+        label = 'taskboard'  # make configurable?
+        num = req.number
+        if num < 1:
+            num = 1
+        rospy.loginfo("GRAB TASKBOARD: {}".format(num))
+        for i in range(0,num):
+            # Start capture and convert to numpy array
+            stream = BytesIO()
+            camera.capture(stream, format='jpeg')
+            data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+            np_image = cv2.imdecode(data, 1)
+            np_image = np_image[:, :, ::-1]
+            # Extract taskboard from image
+            taskboard = tb.process_taskboard(np_image,80)
+            # Save warped taskboard image
+            filename = '{}-{}-{}.png'.format(NODE_NAME,label,get_time_string())
+            image = Image.fromarray(taskboard)
+            image.save(filename)
+            rospy.loginfo("{} grabbing taskboard {}/{} -> {}".format(NODE_NAME,i+1,num,filename))
+
+        success = True
+        print("")
+        return GrabStillResponse(success)
 
 def start_recording(req):
     global recording, camera
@@ -116,19 +143,30 @@ def picam_client():
     rospy.init_node(NODE_NAME)
     os.chdir(SAVE_DIR)
 
+    #Get ROS params
+    enable_video = rospy.get_param("~enable_video")
+    cam_w = rospy.get_param("~im_width")
+    cam_h = rospy.get_param("~im_height")
+    cam_fps = rospy.get_param("~fps")
+    cam_iso = rospy.get_param("~iso")
+    cam_rotation = rospy.get_param("~rotation")
+
     rospy.loginfo("NODE_NAME: \"{}\"".format(NODE_NAME))
     rospy.loginfo("SAVE_DIR: \"{}\"".format(SAVE_DIR))
+    rospy.loginfo("Video:{} Dim:{}x{} FPS:{} Rotation:{}".format(enable_video,cam_w,cam_h,cam_fps,cam_rotation))
 
     global recording, camera
     recording = False
-    camera = setup_camera(NODE_NAME)
+    camera = setup_camera(NODE_NAME,cam_w,cam_h,cam_fps,cam_rotation,cam_iso)
     rospy.loginfo("Camera initialized.")
 
     # TODO: load parameters
 
     srv1 = rospy.Service(NODE_NAME+'/grab_still', GrabStill, grab_still)
-    srv2 = rospy.Service(NODE_NAME+'/start_recording', StartRecording, start_recording)
-    srv3 = rospy.Service(NODE_NAME+'/stop_recording', StopRecording, stop_recording)
+    srv2 = rospy.Service(NODE_NAME+'/grab_taskboard', GrabStill, grab_taskboard)
+    if enable_video:
+        srv3 = rospy.Service(NODE_NAME+'/start_recording', StartRecording, start_recording)
+        srv4 = rospy.Service(NODE_NAME+'/stop_recording', StopRecording, stop_recording)
     rospy.loginfo("Services ready.\n")
 
     rate = rospy.Rate(1)

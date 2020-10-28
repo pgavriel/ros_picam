@@ -4,13 +4,29 @@
   <arg name="node_name" default="picam1" />
   <!-- Folder to save captured images and video -->
   <arg name="save_dir" default="$(find ros_picam)/captures" />
+  <!-- Primary usage is for still image collection/evaluation, video services still need work. -->
+  <arg name="enable_video" default="false" />
+  <!-- Camera Object Configuration -->
+  <arg name="width" default="3280" /> <!-- Max video: 1920, Max still: 3280 -->
+  <arg name="height" default="2464" /> <!-- Max video: 1080, Max still: 2464 -->
+  <arg name="fps" default="30" />
+  <arg name="iso" default="500" />
+  <arg name="rotation" default="180" /> <!-- Accepts: 0, 90, 180, 270 -->
 
+  <!-- TODO: Implement camera config as args instead of params? -->
   <node name="$(arg node_name)"
     pkg="ros_picam"
     type="picam_client.py"
     output="screen"
     respawn="true"
     respawn_delay="5"
-    args="$(arg save_dir)" />
+    args="$(arg save_dir)">
+    <param name="enable_video" value="$(arg enable_video)" />
+    <param name="im_width" value="$(arg width)" />
+    <param name="im_height" value="$(arg height)" />
+    <param name="fps" value="$(arg fps)" />
+    <param name="iso" value="$(arg iso)" />
+    <param name="rotation" value="$(arg rotation)" />
+  </node>
 
 </launch>

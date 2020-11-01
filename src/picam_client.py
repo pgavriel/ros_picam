@@ -6,6 +6,7 @@ from io import BytesIO
 import rospy
 import rosgraph
 from std_msgs.msg import String
+from sensor_msgs.msg import Image as ROSImage
 from ros_picam.srv import *
 from time import sleep
 from datetime import datetime
@@ -13,6 +14,7 @@ from datetime import datetime
 from picamera import PiCamera
 from PIL import Image
 import cv2
+from cv_bridge import CvBridge
 import numpy as np
 import taskboard_detection as tb
 
@@ -68,6 +70,8 @@ def grab_still(req):
 
 def grab_taskboard(req):
         success = False
+        publish = True
+        savelocal = False
         label = 'taskboard'  # make configurable?
         num = req.number
         if num < 1:
@@ -82,11 +86,17 @@ def grab_taskboard(req):
             np_image = np_image[:, :, ::-1]
             # Extract taskboard from image
             taskboard = tb.process_taskboard(np_image,80)
-            # Save warped taskboard image
-            filename = '{}-{}-{}.png'.format(NODE_NAME,label,get_time_string())
-            image = Image.fromarray(taskboard)
-            image.save(filename)
-            rospy.loginfo("{} grabbing taskboard {}/{} -> {}".format(NODE_NAME,i+1,num,filename))
+            if publish:
+                bridge = CvBridge()
+                image_message = bridge.cv2_to_imgmsg(taskboard, encoding="passthrough")
+                pub = rospy.Publisher("picam_output",ROSImage)
+                pub.publish(image_message)
+            if savelocal:
+                # Save warped taskboard image
+                filename = '{}-{}-{}.png'.format(NODE_NAME,label,get_time_string())
+                image = Image.fromarray(taskboard)
+                image.save(filename)
+                rospy.loginfo("{} grabbing taskboard {}/{} -> {}".format(NODE_NAME,i+1,num,filename))
 
         success = True
         print("")

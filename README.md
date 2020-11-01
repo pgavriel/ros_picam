@@ -9,7 +9,18 @@ Any Raspberry Pi with a working ROS installation should be able to work, but thi
 #### Step 2: Network / Hostname setup    
 Log into the Pi and connect to your desired network. If you intend on using multiple cameras, you should also set a unique hostname for each Pi.   
 
-#### Step 3: Configure the Pi to login automatically on startup    
+#### Step 3: Setup ROS_MASTER_URI   
+[ROS Network Setup](http://wiki.ros.org/ROS/NetworkSetup)   
+[ROS Tutorial: Multiple Machines](http://wiki.ros.org/ROS/Tutorials/MultipleMachines)   
+
+#### Step 4: Clone this repository to the Pi's ROS workspace  
+**NOTE:** Ubiquity Robotics also has a [raspicam_node repository](https://github.com/UbiquityRobotics/raspicam_node) that will stream camera data over ROS topics. Their repository might also be useful to clone also, however this repository is not integrated with it in any way *yet*.   
+Make sure to build the workspace afterwards.   
+
+#### Step 5: Clone this repository to the master machines workspace  
+This is so the services can be called from the master machine. Otherwise, it will see the services but will throw an error when calling them saying it doesn't know how the service is defined.
+
+#### Step 6: [Optional] Configure the Pi to login automatically on startup    
 From [this forum post](https://forum.ubiquityrobotics.com/t/a-hack-to-autologin/236/4), the solution from jonovos worked well for me.  
 Create the following file:     
 ```
@@ -31,17 +42,6 @@ autologin-user-timeout = 0
 [SeatDefaults]
 allow-guest =  false
 ```   
-
-#### Step 4: Setup ROS_MASTER_URI   
-[ROS Network Setup](http://wiki.ros.org/ROS/NetworkSetup)   
-[ROS Tutorial: Multiple Machines](http://wiki.ros.org/ROS/Tutorials/MultipleMachines)   
-
-#### Step 5: Clone this repository to the Pi's ROS workspace  
-**NOTE:** Ubiquity Robotics also has a [raspicam_node repository](https://github.com/UbiquityRobotics/raspicam_node) that will stream camera data over ROS topics. Their repository might also be useful to clone also, however this repository is not integrated with it in any way *yet*.   
-Make sure to build the workspace afterwards.   
-
-#### Step 6: Clone this repository to the master machines workspace  
-This is so the services can be called from the master machine. Otherwise, it will see the services but will throw an error when calling them saying it doesn't know how the service is defined.
 
 #### Step 7: [Optional] Create a startup service for picam client
 **Background:**     
@@ -78,7 +78,7 @@ The three currently implemented services are **grab_still**, **start_recording**
 rosservice call [node_name]/grab_still 3
 ```   
 However, the launch files provided will also call their respective services. The benefit of calling the services via launch files is that they can easily be edited to call the services from multiple Picams simultaneously if using a multi-camera setup.   
-  
+
 Additional services can be defined and implemented as needed.  
 
 TODO: Recorded videos may all need to be converted using something like MP4Box (part of gpac). [This was the most relevant post I found](https://www.raspberrypi.org/forums/viewtopic.php?t=245875) regarding choppy/glitched video playback, and it seems like the data itself is fine, but it lacks some information for proper playback for some reason. Will likely address this when it becomes clearer how stills and videos are going to be handled over the network.

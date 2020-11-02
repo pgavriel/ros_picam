@@ -18,6 +18,7 @@ from cv_bridge import CvBridge
 import numpy as np
 import taskboard_detection as tb
 
+pub = rospy.Publisher("picam_output",ROSImage,queue_size=10)
 
 def setup_camera(label,w=1920,h=1080,fps=30,rotation=0,iso=500):
     camera = PiCamera(resolution=(w, h), framerate=fps)
@@ -88,9 +89,11 @@ def grab_taskboard(req):
             taskboard = tb.process_taskboard(np_image,80)
             if publish:
                 bridge = CvBridge()
-                image_message = bridge.cv2_to_imgmsg(taskboard, encoding="passthrough")
-                pub = rospy.Publisher("picam_output",ROSImage)
+                image_message = bridge.cv2_to_imgmsg(taskboard, "bgr8")
+                image_message.header.frame_id = NODE_NAME
+                #pub = rospy.Publisher("picam_output",ROSImage,500)
                 pub.publish(image_message)
+                rospy.loginfo("Taskboard published.")
             if savelocal:
                 # Save warped taskboard image
                 filename = '{}-{}-{}.png'.format(NODE_NAME,label,get_time_string())

@@ -199,7 +199,7 @@ def refine_corners(image,corners,box_size=50,line_thresh=110):
 
 
 # Tries to return coordinates for a rough bounding rectangle around the taskboard
-def isolate_board(image,thresh=120,area_lb=0,area_ub=100000):
+def isolate_board(image,thresh=120,area_lb=0,area_ub=150000):
     rospy.loginfo("ISOLATING TASKBOARD:")
     area = 0
     gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
@@ -231,7 +231,7 @@ def isolate_board(image,thresh=120,area_lb=0,area_ub=100000):
 
 
 # Takes an image and four corners, outputs square warped image. Very costly.
-def find_homography(image,corners,size=1000):
+def find_homography(image,corners,size=800):
     rospy.loginfo("WARPING PERSPECTIVE: ")
     rospy.loginfo("Output Size: {}".format(size))
     pts1 = np.float32(corners)
@@ -246,7 +246,7 @@ def find_homography(image,corners,size=1000):
 # PRIMARY FUNCTION:
 # Takes an image, finds the corners of the taskboard, and returns a square
 # warped image of only the taskboard. Saves debug images to help understand the process.
-def process_taskboard(image,thresh=80,scale_down_factor=4):
+def process_taskboard(image,thresh=80,scale_down_factor=4,debug=True):
     path = '/home/ubuntu/catkin_ws/src/ros_picam/captures/debug/'
     # Scale image down for processing
     scaled = scale_image(image,(100/scale_down_factor))
@@ -259,28 +259,36 @@ def process_taskboard(image,thresh=80,scale_down_factor=4):
         print("Apriltag found.")
         # Apriltag corners
         tag_corners = tag[0].corners.astype('int32')
+
         # Find rough bounding box of taskboard based on largest contour
         stage1, smooth, box = isolate_board(scaled,thresh=thresh)
+        if debug:  # Save debug image for stage1
+            img = Image.fromarray(stage1)
+            img.save(os.path.join(path,"1-stage1.png"))
+
         # Sort box points to align with apriltag corners, this keeps ordering consistant
         box = sortpoints(box,tag_corners)
+
         # Refine the corner positions
         stage2, final_box, corner_debug = refine_corners(gray,box)
-        scaled = draw_points(scaled,final_box,color=(255,0,0))
+        if debug:  # Save debug images from stage2
+            img = Image.fromarray(stage2)
+            img.save(os.path.join(path,"2-stage2.png"))
+            img = Image.fromarray(corner_debug)
+            img.save(os.path.join(path,"3-corner_debug.png"))
+
+        # Draw final corners on image
+        if debug:  # Save debug image showing final corners
+            scaled = draw_points(scaled,final_box,color=(255,0,0))
+            img = Image.fromarray(scaled)
+            img.save(os.path.join(path,"4-final_corners.png"))
+
         # Scale corner coordinates back to original image size
         final_box_scaled = []
         for i in range(0,len(final_box)):
             final_box_scaled.append( (final_box[i][0] * scale_down_factor, final_box[i][1] * scale_down_factor) )
+
         # Warp original image based on refined corners
         warped = find_homography(image,final_box_scaled)
-
-        # Save debugging images
-        img = Image.fromarray(stage1)
-        img.save(os.path.join(path,"1-stage1.png"))
-        img = Image.fromarray(stage2)
-        img.save(os.path.join(path,"2-stage2.png"))
-        img = Image.fromarray(corner_debug)
-        img.save(os.path.join(path,"3-corner_debug.png"))
-        img = Image.fromarray(scaled)
-        img.save(os.path.join(path,"4-final_corners.png"))
 
         return warped

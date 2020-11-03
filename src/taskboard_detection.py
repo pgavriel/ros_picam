@@ -231,7 +231,7 @@ def isolate_board(image,thresh=120,area_lb=0,area_ub=100000):
 
 
 # Takes an image and four corners, outputs square warped image. Very costly.
-def find_homography(image,corners,size=1000):
+def find_homography(image,corners,size=800):
     rospy.loginfo("WARPING PERSPECTIVE: ")
     rospy.loginfo("Output Size: {}".format(size))
     pts1 = np.float32(corners)

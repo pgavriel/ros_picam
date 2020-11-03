@@ -86,7 +86,7 @@ def grab_taskboard(req):
             np_image = cv2.imdecode(data, 1)
             np_image = np_image[:, :, ::-1]
             # Extract taskboard from image
-            taskboard = tb.process_taskboard(np_image,80)
+            taskboard = tb.process_taskboard(np_image,120)
             if publish:
                 bridge = CvBridge()
                 image_message = bridge.cv2_to_imgmsg(taskboard, "bgr8")

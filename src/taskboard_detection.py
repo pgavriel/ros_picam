@@ -194,7 +194,7 @@ def refine_corners(image,corners,box_size=50,line_thresh=110):
 
         return stage2_img, c_subpix, vstack
     except Exception as e:
-        rospy.logerror("Error with corner mats: {}".format(e))
+        rospy.logerr("Error with corner mats: {}".format(e))
         return stage2_img, c_subpix, None
 
 

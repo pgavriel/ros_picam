@@ -7,9 +7,11 @@ https://downloads.ubiquityrobotics.com/pi.html
 Any Raspberry Pi with a working ROS installation should be able to work, but this image comes with everything already installed which makes the process a lot easier.  
 
 #### Step 2: Network / Hostname setup    
-Log into the Pi and connect to your desired network. If you intend on using multiple cameras, you should also set a unique hostname for each Pi.   
+Log into the Pi and connect to your desired network. If you intend on using multiple cameras, you should also set a unique hostname for each Pi.  
+[Ubiquity Network Setup Tutorial](https://learn.ubiquityrobotics.com/connect_network)   
 
 #### Step 3: Setup ROS_MASTER_URI   
+I tend to add the ROS_MASTER_URI export line to the bottom of my ~/.bashrc so you don't need to type it repeatedly.   
 [ROS Network Setup](http://wiki.ros.org/ROS/NetworkSetup)   
 [ROS Tutorial: Multiple Machines](http://wiki.ros.org/ROS/Tutorials/MultipleMachines)   
 
@@ -42,6 +44,7 @@ autologin-user-timeout = 0
 [SeatDefaults]
 allow-guest =  false
 ```   
+Reboot the raspberry pi and it should automatically log you back in.   
 
 #### Step 7: [Optional] Create a startup service for picam client
 **Background:**     

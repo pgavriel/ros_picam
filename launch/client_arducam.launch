@@ -1,34 +1,35 @@
 <!-- To be run on the Raspberry Pi, not the master machine -->
 <!-- THIS LAUNCH FILE USES THE CLIENT SCRIPT THAT EXPECTS
-     PICAMERA_V2 MODULE WITH NO AUTOFOCUS -->
+     ARDUCAM 5MP CAMERA MODULE WITH AUTOFOCUS -->
 <launch>
 
   <!-- Serves as camera identifier and topic/service namespace -->
   <arg name="node_name" default="picam1" />
 
   <!-- Output Parameters -->
-  <arg name="save_local" default="false" />
+  <arg name="save_local" default="true" />
   <arg name="save_dir" default="$(find ros_picam)/captures" />
-  <arg name="publish" default="true" />
+  <arg name="publish" default="false" />
   <arg name="publish_topic" default="picam_output" />
 
   <!-- Camera Parameters -->
   <!-- Primary usage is for still image collection/evaluation, video services still need work. -->
   <arg name="enable_video" default="false" />
   <!-- Camera Object Configuration -->
-  <arg name="width" default="3280" /> <!-- Max video: 1920, Max still: 3280 -->
-  <arg name="height" default="2464" /> <!-- Max video: 1080, Max still: 2464 -->
+  <arg name="width" default="2592" /> <!-- Max video: 1920, Max still: 2592 -->
+  <arg name="height" default="1944" /> <!-- Max video: 1080, Max still: 1944 -->
   <arg name="fps" default="30" />
-  <arg name="iso" default="100" /> <!-- Range: 0 to 1600 -->
+  <arg name="iso" default="1000" /> <!-- Range: 0 to 1600 -->
   <arg name="brightness" default="50" /> <!-- Range: 0 to 100 -->
   <arg name="contrast" default="0" /> <!-- Range: -100 to 100 -->
   <arg name="rotation" default="180" /> <!-- Accepts: 0, 90, 180, 270 -->
+  <arg name="focus" default="170" /> <!-- 0 = Autofocus, Manual Set Range: ~15-950(?) -->
 
 
   <!-- Run Picam Node -->
   <node name="$(arg node_name)"
     pkg="ros_picam"
-    type="picam_client_v2.py"
+    type="picam_client_arducam.py"
     output="screen"
     respawn="true"
     respawn_delay="5">
@@ -46,6 +47,7 @@
     <param name="brightness" value="$(arg brightness)" />
     <param name="contrast" value="$(arg contrast)" />
     <param name="rotation" value="$(arg rotation)" />
+    <param name="focus" value="$(arg focus)" />
   </node>
 
 </launch>

@@ -9,6 +9,10 @@ Any Raspberry Pi with a working ROS installation should be able to work, but thi
 #### Step 2: Network / Hostname setup    
 Log into the Pi and connect to your desired network. If you intend on using multiple cameras, you should also set a unique hostname for each Pi.  
 [Ubiquity Network Setup Tutorial](https://learn.ubiquityrobotics.com/connect_network)   
+```
+pifi set-hostname <hostname>
+pifi add <ssid> <password>
+```   
 
 #### Step 3: Setup ROS_MASTER_URI   
 I tend to add the ROS_MASTER_URI export line to the bottom of my ~/.bashrc so you don't need to type it repeatedly.   
@@ -72,7 +76,7 @@ The main script being used is **picam_client.py**, the other python scripts in t
 #### On the Pi   
 **client.launch** is used. The name for the camera and the directory to save captures can be specified. The *--wait* flag can be used to ensure it waits for roscore to be available before launching:   
 ```
-roslaunch ros_picam client.launch --wait
+roslaunch ros_picam client_arducam.launch --wait
 ```   
 This node will continually try to restart itself if the connection to master is lost.  
 #### On the master machine   

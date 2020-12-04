@@ -7,9 +7,9 @@
   <arg name="node_name" default="picam1" />
 
   <!-- Output Parameters -->
-  <arg name="save_local" default="true" />
+  <arg name="save_local" default="false" />
   <arg name="save_dir" default="$(find ros_picam)/captures" />
-  <arg name="publish" default="false" />
+  <arg name="publish" default="true" />
   <arg name="publish_topic" default="picam_output" />
 
   <!-- Camera Parameters -->
@@ -23,7 +23,7 @@
   <arg name="brightness" default="50" /> <!-- Range: 0 to 100 -->
   <arg name="contrast" default="0" /> <!-- Range: -100 to 100 -->
   <arg name="rotation" default="180" /> <!-- Accepts: 0, 90, 180, 270 -->
-  <arg name="focus" default="170" /> <!-- 0 = Autofocus, Manual Set Range: ~15-950(?) -->
+  <arg name="focus" default="0" /> <!-- 0 = Autofocus, Manual Set Range: ~15-950(?) -->
 
 
   <!-- Run Picam Node -->

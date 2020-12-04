@@ -28,7 +28,7 @@ def get_time_string(include_date=False):
 
 def callback(img):
     node = img.header.frame_id
-    print("Image received from: {}".format(node))
+    rospy.loginfo("Image received from: {}".format(node))
     label = "taskboard"
     bridge = CvBridge()
     try:
@@ -36,7 +36,7 @@ def callback(img):
         filename = '{}-{}-{}.png'.format(node,label,get_time_string())
         image = Image.fromarray(cv_image)
         image.save(filename)
-        print("Image saved to: {}".format(filename))
+        rospy.loginfo("Image saved to: {}".format(filename))
         cv2.imshow('test',cv_image)
     except CvBridgeError as e:
         print(e)
@@ -44,13 +44,18 @@ def callback(img):
 
 def picam_receiver():
     rospy.init_node('picam_receiver')
-    #global SAVE_DIR
-    SAVE_DIR = '/home/pgavriel/ros_ws/src/ros_picam/captures'
-    os.chdir(SAVE_DIR)
-    sub = rospy.Subscriber("picam_output",ROSImage,callback)
-    rospy.loginfo("Subscriber up.")
+    rospy.loginfo("Starting picam receiver...")
+
+    save_dir = rospy.get_param("~save_dir")
+    topic = rospy.get_param("~topic")
+    rospy.loginfo("Save Directory: {}".format(save_dir))
+    rospy.loginfo("Topic: {}".format(topic))
+
+    os.chdir(save_dir)
+    sub = rospy.Subscriber(topic,ROSImage,callback)
+    rospy.loginfo("Ready.")
+
     rospy.spin()
-    pass
 
 if __name__ == '__main__':
 

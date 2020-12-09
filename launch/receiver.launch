@@ -1,0 +1,18 @@
+<launch>
+
+  <!-- Location to save published images -->
+  <arg name="save_dir" default="$(find ros_picam)/captures" />
+  <!-- Topic to subscribe to -->
+  <arg name="topic" default="picam_output" />
+
+  <node name="picam_receiver"
+    pkg="ros_picam"
+    type="picam_receiver.py"
+    output="screen"
+    respawn="true"
+    respawn_delay="5">
+    <!-- Give params to receiver node -->
+    <param name="save_dir" value="$(arg save_dir)" />
+    <param name="topic" value="$(arg topic)" />
+  </node>
+</launch>

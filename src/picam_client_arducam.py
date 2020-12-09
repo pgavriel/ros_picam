@@ -296,7 +296,9 @@ class picam_client:
         rospy.loginfo("Max Index: {}, Max Value: {}\n".format(max_index,max_value))
         rospy.loginfo("Fine Tuning...")
         fine_lb = max_index - 25
+        if fine_lb < 10: fine_lb = 10
         fine_ub = max_index + 25
+        if fine_ub > 1000: fine_ub = 1000
         focal_distance = fine_lb
         max_index = fine_lb
         max_value = 0.0

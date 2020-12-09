@@ -9,6 +9,10 @@ Any Raspberry Pi with a working ROS installation should be able to work, but thi
 #### Step 2: Network / Hostname setup    
 Log into the Pi and connect to your desired network. If you intend on using multiple cameras, you should also set a unique hostname for each Pi.  
 [Ubiquity Network Setup Tutorial](https://learn.ubiquityrobotics.com/connect_network)   
+```
+pifi set-hostname <hostname>
+pifi add <ssid> <password>
+```   
 
 #### Step 3: Setup ROS_MASTER_URI   
 I tend to add the ROS_MASTER_URI export line to the bottom of my ~/.bashrc so you don't need to type it repeatedly.   
@@ -70,13 +74,18 @@ NOTE: For currently unknown reasons, text output from the node only makes it int
 ### Using ros_picam
 The main script being used is **picam_client.py**, the other python scripts in the src folder are just for testing purposes and will likely be removed at some point.
 #### On the Pi   
-**client.launch** is used. The name for the camera and the directory to save captures can be specified. The *--wait* flag can be used to ensure it waits for roscore to be available before launching:   
+**client_arducam.launch** is used. The name for the camera and the directory to save captures can be specified. The *--wait* flag can be used to ensure it waits for roscore to be available before launching:   
 ```
-roslaunch ros_picam client.launch --wait
+roslaunch ros_picam client_arducam.launch --wait
 ```   
 This node will continually try to restart itself if the connection to master is lost.  
 #### On the master machine   
-The three currently implemented services are **grab_still**, **start_recording**, and **stop_recording**. They can be called via rosservice like:
+If the picam nodes are set to publish recorded images over a topic, **receiver.launch** will start a node that will subscribe to that topic and save published images to a specified topic. The save directory and topic can be set in the launch file.   
+```
+roslaunch ros_picam receiver.launch
+```    
+
+The currently implemented services are **grab_still**, **grab_taskboard**, **start_recording**, and **stop_recording**. They can be called via rosservice like:
 ```
 rosservice call [node_name]/grab_still 3
 ```   

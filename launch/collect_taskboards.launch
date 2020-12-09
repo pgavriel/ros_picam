@@ -1,0 +1,10 @@
+<launch>
+  <!-- Number of stills to grab -->
+  <arg name="num" default="1" />
+  <arg name="interval" default="3" />
+
+  <node pkg="rosservice" type="rosservice" name="global_loc1"
+    repawn="true" respawn_delay="$(arg interval)" args="call --wait /picam1/grab_taskboard $(arg num)" />
+  <!-- <node pkg="rosservice" type="rosservice" name="global_loc2"
+    repawn="true" respawn_delay="$(arg interval)" args="call -[remove]-wait /picam2/grab_taskboard $(arg num)" /> -->
+</launch>

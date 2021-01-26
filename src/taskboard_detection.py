@@ -250,6 +250,8 @@ def process_taskboard(image,thresh=80,scale_down_factor=4,debug=True):
     path = '/home/ubuntu/catkin_ws/src/ros_picam/captures/debug/'
     # Scale image down for processing
     scaled = scale_image(image,(100/scale_down_factor))
+    img = Image.fromarray(scaled)
+    img.save(os.path.join(path,"0-scaledview.png"))
     gray = cv2.cvtColor(scaled,cv2.COLOR_BGR2GRAY)
     # Attempt to detect apriltag
     tag = find_apriltag(gray)

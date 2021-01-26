@@ -130,7 +130,8 @@ class picam_client:
                 np_image = cv2.imdecode(data, 1)
                 np_image = np_image[:, :, ::-1]
                 # Extract taskboard from image
-                taskboard = tb.process_taskboard(np_image,80)
+                #taskboard = tb.process_taskboard(np_image,80)
+                taskboard = tb.process_taskboard(np_image,110)
                 if self.publish:
                     # Publish taskboard image
                     bridge = CvBridge()
@@ -227,13 +228,14 @@ class picam_client:
             self.set_focus(self.cam_focus)
 
         # Wait for the automatic gain control to settle
-        sleep(2)
+        sleep(3)
         # Now fix the values
         camera.shutter_speed = camera.exposure_speed
         camera.exposure_mode = 'off'
-        g = camera.awb_gains
-        camera.awb_mode = 'off'
-        camera.awb_gains = g
+        #g = camera.awb_gains
+        #camera.awb_mode = 'off'
+        #camera.awb_gains = g
+        camera.awb_mode = 'auto'
         return camera
 
     #Arducam Specific Functions

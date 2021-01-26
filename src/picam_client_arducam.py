@@ -131,7 +131,7 @@ class picam_client:
                 np_image = np_image[:, :, ::-1]
                 # Extract taskboard from image
                 #taskboard = tb.process_taskboard(np_image,80)
-                taskboard = tb.process_taskboard(np_image,98)
+                taskboard = tb.process_taskboard(np_image,110)
                 if self.publish:
                     # Publish taskboard image
                     bridge = CvBridge()

@@ -1,7 +1,7 @@
 <launch>
 
   <!-- Location to save published images -->
-  <arg name="save_dir" default="$(find ros_picam)/captures" />
+  <arg name="save_dir" default="/home/csrobot/tb_data/test" />
   <!-- Topic to subscribe to -->
   <arg name="topic" default="picam_output" />
 

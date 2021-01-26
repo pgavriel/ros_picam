@@ -37,7 +37,6 @@ def callback(img):
         image = Image.fromarray(cv_image)
         image.save(filename)
         rospy.loginfo("Image saved to: {}".format(filename))
-        cv2.imshow('test',cv_image)
     except CvBridgeError as e:
         print(e)
 

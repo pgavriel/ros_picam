@@ -20,7 +20,7 @@ I tend to add the ROS_MASTER_URI export line to the bottom of my ~/.bashrc so yo
 [ROS Tutorial: Multiple Machines](http://wiki.ros.org/ROS/Tutorials/MultipleMachines)   
 
 #### Step 4: Clone this repository to the Pi's ROS workspace  
-**NOTE:** Ubiquity Robotics also has a [raspicam_node repository](https://github.com/UbiquityRobotics/raspicam_node) that will stream camera data over ROS topics. Their repository might also be useful to clone also, however this repository is not integrated with it in any way *yet*.   
+**NOTE:** Ubiquity Robotics also has a [raspicam_node repository](https://github.com/UbiquityRobotics/raspicam_node) that will stream camera data over ROS topics. Their repository might also be useful to clone, however this repository is not integrated with it in any way *yet*.   
 Make sure to build the workspace afterwards.   
 
 #### Step 5: Clone this repository to the master machines workspace  

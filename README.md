@@ -72,7 +72,7 @@ sudo systemctl restart picam_autostart
 NOTE: For currently unknown reasons, text output from the node only makes it into systemctl status when the node is shutdown. Ideally there will be a way around this, or some other way of monitoring the nodes output in realtime for troubleshooting.
 
 ### Using ros_picam
-The main script being used is **picam_client.py**, the other python scripts in the src folder are just for testing purposes and will likely be removed at some point.
+The main script being used is **client_arducam.py**, the other python scripts in the src folder are just for testing purposes and will likely be removed at some point.
 #### On the Pi   
 **client_arducam.launch** is used. The name for the camera and the directory to save captures can be specified. The *--wait* flag can be used to ensure it waits for roscore to be available before launching:   
 ```
